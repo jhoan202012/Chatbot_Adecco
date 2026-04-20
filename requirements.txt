@@ -2,3 +2,4 @@ streamlit
 chromadb
 openai
 PyPDF2
+protobuf<=3.20.3
