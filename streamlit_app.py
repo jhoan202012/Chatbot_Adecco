@@ -50,7 +50,7 @@ except Exception as e:
 
 # 4. Estructuración del Panel Lateral (Sidebar)
 with st.sidebar:
-    ruta_logo = "Imagenes/adecco_logo.png" 
+    ruta_logo = "adecco_logo.png" 
     if os.path.exists(ruta_logo):
         st.image(ruta_logo, width=200) 
     else:
