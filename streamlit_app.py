@@ -5,6 +5,41 @@ import os
 import io
 from datetime import datetime
 from PyPDF2 import PdfReader # Nueva dependencia para parseo de PDF
+# --- 1. MÓDULO DE AUTENTICACIÓN (MÁSCARA DE PROTECCIÓN) ---
+def verificar_contrasena():
+    """Valida la credencial antes de compilar el resto del árbol DOM."""
+    if st.secrets.get("APP_PASSWORD") is None:
+        st.error("Excepción: Contraseña no configurada en st.secrets.")
+        st.stop()
+
+    def password_entered():
+        if st.session_state["password"] == st.secrets["APP_PASSWORD"]:
+            st.session_state["password_correct"] = True
+            del st.session_state["password"] # Limpieza de memoria volátil
+        else:
+            st.session_state["password_correct"] = False
+
+    if "password_correct" not in st.session_state:
+        # Primer renderizado: Solicitar credencial
+        st.text_input("Acceso Restringido: Ingrese credencial de autorización", type="password", on_change=password_entered, key="password")
+        return False
+    elif not st.session_state["password_correct"]:
+        # Intento fallido
+        st.text_input("Acceso Restringido: Ingrese credencial de autorización", type="password", on_change=password_entered, key="password")
+        st.error("Fallo de autenticación. Credencial inválida.")
+        return False
+    else:
+        # Autenticación exitosa
+        return True
+
+# Cláusula de guarda: Si es falso, detiene la ejecución del script aquí mismo.
+if not verificar_contrasena():
+    st.stop()
+
+# --- 2. EL RESTO DE TU CÓDIGO (RAG, Groq, UI) CONTINÚA AQUÍ ---
+st.success("Autenticación exitosa. Conexión segura establecida.")
+
+# (Aquí va tu inicialización de ChromaDB, Groq y la interfaz de chat)
 
 # 1. Inicialización de Parámetros de Interfaz
 st.set_page_config(
